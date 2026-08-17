@@ -1,15 +1,24 @@
+import os
 from dotenv import load_dotenv
 from google.cloud import videointelligence
 
 load_dotenv()
 # Object tracking algorithm using Google Video Intelligence API.
 
+def get_video_path():
+    load_dotenv()
+    video_path = os.getenv("VIDEO_PATH")
+    if not video_path:
+        raise ValueError("VIDEO_PATH is not set in .env")
+    return video_path
+
+
+video_path = get_video_path()
+
 video_client = videointelligence.VideoIntelligenceServiceClient()
 features = [videointelligence.Feature.OBJECT_TRACKING]
 
-file_path = './Test_atm.mp4'
-
-with open(file_path,'rb') as file :
+with open(video_path, 'rb') as file:
     input_content = file.read() 
 
 operation = video_client.annotate_video(

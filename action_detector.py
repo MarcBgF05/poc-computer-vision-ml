@@ -7,9 +7,19 @@ from helpers.detector import detect_suspicious_simple
 
 
 ## Algorithm for detection using Google Video Intelligence API.
-def load_video_content(video_path='./Test_atm.mp4'):
+def get_video_path():
+    load_dotenv()
+    video_path = os.getenv("VIDEO_PATH")
+    if not video_path:
+        raise ValueError("VIDEO_PATH is not set in .env")
+    return video_path
+
+
+def load_video_content(video_path=None):
     print("load_video_content() called\n")
-    
+    if video_path is None:
+        video_path = get_video_path()
+
     if not os.path.exists(video_path):
         raise FileNotFoundError(f"Video file not found: {video_path}")
     
@@ -65,12 +75,12 @@ def print_people_detection_annotations(annotation_result):
 def main():
     try:
         load_dotenv()
-        print("✓ Environment variables loaded")
+        print("Environment variables loaded")
         print("Starting analysis...\n")
         input_content = load_video_content()
-        print("✓ Video loaded")
+        print("Video loaded")
         video_client = videointelligence.VideoIntelligenceServiceClient()
-        print("✓ Video Intelligence client activated")
+        print("Video Intelligence client activated")
         context = configure_people_detection()
         annotation_result = process_video(video_client, input_content, context)
         print_people_detection_annotations(annotation_result)

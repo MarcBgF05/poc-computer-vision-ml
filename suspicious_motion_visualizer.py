@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 from google.cloud import videointelligence
 
@@ -259,9 +260,18 @@ def play_with_overlays(video_path: str, annotation_result):
 # ==========================
 # Main
 # ==========================
+def get_video_path():
+    load_dotenv()
+    video_path = os.getenv("VIDEO_PATH")
+    if not video_path:
+        raise ValueError("VIDEO_PATH is not set in .env")
+    return video_path
+
+
 def main():
-    video_path = "./Test_atm.mp4"  # adjust path
     try:
+        load_dotenv()
+        video_path = get_video_path()
         annotation_result = run_videointel(video_path)
         play_with_overlays(video_path, annotation_result)
     except Exception as e:
